@@ -34,4 +34,5 @@ If your block depends on another block, place them all in extensions folder:
 
 ## Develop new blocks
 
-You can follow [the instructions here](../docs/guides/gutenberg-blocks.md) to add your own block to Jetpack.
+Coming when [#11640](https://github.com/Automattic/jetpack/pull/11640) lands.
+
