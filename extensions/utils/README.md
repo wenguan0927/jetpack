@@ -1,9 +1,7 @@
-<!-- @format -->
+# Jetpack Block Editor Extensions: Utils
 
-# Utils Folder
-
-This folder contains files that are used by blocks of this preset but contains
-files that are not automatically bundled. But included on an individual basis instead.
+This folder contains files that are not automatically bundled,
+but included on an individual basis instead.
 
 ## getJetpackData()
 
