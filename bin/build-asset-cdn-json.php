@@ -9,7 +9,7 @@ $manifest = array();
 foreach ( $regex as $file => $value ) {
 	$file = str_replace( $path, '', $file );
 	$directory = substr( $file, 0, strpos( $file, '/' ) );
-	if ( in_array( $directory, array( 'node_modules', 'tests' ) ) ) {
+	if ( in_array( $directory, array( 'node_modules', 'tests', 'extensions' ) ) ) {
 		continue;
 	}
 	$manifest[] = $file;
