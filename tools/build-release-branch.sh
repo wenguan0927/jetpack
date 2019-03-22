@@ -52,6 +52,7 @@ function create_release_gitignore {
 
     # Add custom stuff to .gitignore release
     echo "/_inc/client" >> .gitignore
+    # Needs to stay in sync with .svnignore
     echo "/extensions/**/*.{js,jsx,json,gif,png,css,jpg,jpeg,sass,scss,svg}" >> .gitignore
 
     # Remove old .gitignore
