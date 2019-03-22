@@ -121,6 +121,10 @@ function create_new_release_branches {
             # Remove stuff from svnignore
             modify_svnignore
 
+            git rm -r --cached .
+            git add .
+            git commit -m ".gitignore cleanup"
+
             git checkout $NEW_UNBUILT_BRANCH
 
             git push -u origin $NEW_BUILT_BRANCH
