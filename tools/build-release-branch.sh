@@ -94,7 +94,7 @@ function create_new_release_branches {
         echo "Creating new unbuilt branch $NEW_UNBUILT_BRANCH from current master branch..."
         echo ""
         # reset --hard to remote master in case they have local commits in their repo
-        git checkout master && git pull && git reset --hard origin/master
+        # git checkout master && git pull && git reset --hard origin/master
 
         # Create new branch, push to repo
         git checkout -b $NEW_UNBUILT_BRANCH
