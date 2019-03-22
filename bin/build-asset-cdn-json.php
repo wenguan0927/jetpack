@@ -6,17 +6,16 @@ $iterator  = new RecursiveIteratorIterator( $directory );
 $regex     = new RegexIterator( $iterator, '/^.+\.(css|js)$/i', RecursiveRegexIterator::GET_MATCH );
 
 $manifest = array();
-foreach ( $regex as $file => $value ) {
-	$file = str_replace( $path, '', $file );
-	$directory = substr( $file, 0, strpos( $file, '/' ) ) ;
-	// $directory is always the first direcotry.
-	// empty( $directory ) is the parent directory we can any ignore the scritpts in there as well.
-	if ( empty( $directory ) || in_array( $directory, array( 'node_modules', 'tests', 'tools', 'extensions', 'docker', 'bin', 'vendor', 'logs', 'docs' ) ) ) {
+foreach ( $regex as $absolute_path_to_file => $value ) {
+	$relative_path_to_file = str_replace( $path, '', $absolute_path_to_file );
+	$top_parent_path = substr( $relative_path_to_file, 0, strpos( $relative_path_to_file, '/' ) ) ;
+	// $top_parent_path is the first folder on .
+	// empty( $top_parent_path ) is the parent directory we can any ignore the scripts in there as well.
+	if ( empty( $top_parent_path ) || in_array( $top_parent_path, array( 'node_modules', 'tests', 'tools', 'extensions', 'docker', 'bin', 'vendor', 'logs', 'docs' ) ) ) {
 		continue;
 	}
 
-
-	$manifest[] = $file;
+	$manifest[] = $relative_path_to_file;
 }
 
 $export = var_export( $manifest, true );
