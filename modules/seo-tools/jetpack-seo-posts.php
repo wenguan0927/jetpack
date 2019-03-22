@@ -89,7 +89,7 @@ class Jetpack_SEO_Posts {
 		if ( Jetpack_SEO_Utils::is_enabled_jetpack_seo() ) {
 			Jetpack_Gutenberg::set_extension_available( 'jetpack-seo' );
 		} else {
-			Jetpack_Gutenberg::set_extension_unavailable( 'jetpack-seo', 'missing_plan' );
+			Jetpack_Gutenberg::set_extension_unavailable( 'jetpack-seo', 'jetpack_seo_disabled' );
 		}
 	}
 }
