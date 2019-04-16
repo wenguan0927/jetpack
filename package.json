@@ -63,7 +63,7 @@
 		"test-dangerci-and-adminpage-and-extensions": "yarn danger ci && yarn test-adminpage && yarn test-extensions",
 		"reformat-files": "run-p reformat-files:*",
 		"reformat-files:js": "./node_modules/.bin/prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,json}\"",
-		"reformat-files:css": "stylelint \"**/*.scss\" --syntax scss --fix"
+		"reformat-files:css": "yarn lint:css --fix"
 	},
 	"husky": {
 		"hooks": {
