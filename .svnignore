@@ -3,6 +3,8 @@
 .git
 .gitignore
 .sass-cache
+.stylelintignore
+.stylelintrc.json
 .jshintrc
 .jshintignore
 .travis.yml
