@@ -62,8 +62,8 @@
 		"test-modules": "NODE_ENV=test NODE_PATH=tests:_inc/client:node_modules/@automattic/dops-components/client tests/runner.js modules",
 		"test-dangerci-and-adminpage-and-extensions": "yarn danger ci && yarn test-adminpage && yarn test-extensions",
 		"reformat-files": "run-p -c reformat-files:*",
-		"reformat-files:js": "./node_modules/.bin/prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,json}\"",
-		"reformat-files:css": "npm run -s lint:css -- --fix || exit 0"
+		"reformat-files:css": "npm run -s lint:css -- --fix || exit 0",
+		"reformat-files:js": "./node_modules/.bin/prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,json}\""
 	},
 	"husky": {
 		"hooks": {
