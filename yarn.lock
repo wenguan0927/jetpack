@@ -1413,7 +1413,7 @@
   dependencies:
     "@babel/runtime" "^7.3.1"
 
-"@wordpress/block-editor@^1.1.0":
+"@wordpress/block-editor@^1.1.0", "@wordpress/block-editor@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@wordpress/block-editor/-/block-editor-1.1.2.tgz#51bb37a3a5de086cee352b7ea2de621d9129f260"
   integrity sha512-kD7qo/1WAZW+a9bNP4cKK0l2iSvcYrmUA8op2brrPpR5tQw8TDpd/RJ7bU5Uo1bZe7nvB9caM3/8wJGec3uhkw==
@@ -1427,39 +1427,6 @@
     "@wordpress/core-data" "^2.2.2"
     "@wordpress/data" "^4.4.0"
     "@wordpress/dom" "^2.2.2"
-    "@wordpress/element" "^2.3.0"
-    "@wordpress/hooks" "^2.2.0"
-    "@wordpress/html-entities" "^2.2.0"
-    "@wordpress/i18n" "^3.3.0"
-    "@wordpress/is-shallow-equal" "^1.2.0"
-    "@wordpress/keycodes" "^2.2.0"
-    "@wordpress/rich-text" "^3.2.2"
-    "@wordpress/token-list" "^1.2.0"
-    "@wordpress/url" "^2.5.0"
-    "@wordpress/viewport" "^2.3.0"
-    "@wordpress/wordcount" "^2.2.0"
-    classnames "^2.2.5"
-    dom-scroll-into-view "^1.2.1"
-    lodash "^4.17.10"
-    redux-multi "^0.1.12"
-    refx "^3.0.0"
-    rememo "^3.0.0"
-    tinycolor2 "^1.4.1"
-
-"@wordpress/block-editor@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@wordpress/block-editor/-/block-editor-2.0.1.tgz#d4817d48880a5b8ae6314af4f35fea1b4c8c293a"
-  integrity sha512-CgTqyIO3ZxeyCtln3x7dkTbfw1wW9CMyRFRq2+FrWiaPYk8pz9fFxE++4hXZ8IHr+cb5qtqoEHdDuuqv1Wpc1A==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@wordpress/a11y" "^2.2.0"
-    "@wordpress/blob" "^2.3.0"
-    "@wordpress/blocks" "^6.2.4"
-    "@wordpress/components" "^7.3.1"
-    "@wordpress/compose" "^3.2.0"
-    "@wordpress/core-data" "^2.2.2"
-    "@wordpress/data" "^4.4.0"
-    "@wordpress/dom" "^2.2.4"
     "@wordpress/element" "^2.3.0"
     "@wordpress/hooks" "^2.2.0"
     "@wordpress/html-entities" "^2.2.0"
@@ -1588,32 +1555,6 @@
     "@wordpress/block-serialization-spec-parser" "^3.0.0"
     "@wordpress/data" "^4.4.0"
     "@wordpress/dom" "^2.2.2"
-    "@wordpress/element" "^2.3.0"
-    "@wordpress/hooks" "^2.2.0"
-    "@wordpress/html-entities" "^2.2.0"
-    "@wordpress/i18n" "^3.3.0"
-    "@wordpress/is-shallow-equal" "^1.2.0"
-    "@wordpress/shortcode" "^2.2.0"
-    hpq "^1.3.0"
-    lodash "^4.17.11"
-    rememo "^3.0.0"
-    showdown "^1.8.6"
-    simple-html-tokenizer "^0.4.1"
-    tinycolor2 "^1.4.1"
-    uuid "^3.3.2"
-
-"@wordpress/blocks@^6.2.4":
-  version "6.2.4"
-  resolved "https://registry.yarnpkg.com/@wordpress/blocks/-/blocks-6.2.4.tgz#1262264cebc13a6ba2ef1b66d5c6181061b32d80"
-  integrity sha512-/ebC3wp5Bew973/GOM54kaA6JV2qgT8dhwJWJ4BH0FXvOrmA4fmZljR8R5Tl4UJJQ5Lm39LKPn7lg/sWq5tOMQ==
-  dependencies:
-    "@babel/runtime" "^7.3.1"
-    "@wordpress/autop" "^2.2.0"
-    "@wordpress/blob" "^2.3.0"
-    "@wordpress/block-serialization-default-parser" "^3.1.0"
-    "@wordpress/block-serialization-spec-parser" "^3.0.0"
-    "@wordpress/data" "^4.4.0"
-    "@wordpress/dom" "^2.2.4"
     "@wordpress/element" "^2.3.0"
     "@wordpress/hooks" "^2.2.0"
     "@wordpress/html-entities" "^2.2.0"
@@ -2183,7 +2124,7 @@
     lodash "^4.17.11"
     rememo "^3.0.0"
 
-"@wordpress/nux@^3.2.4":
+"@wordpress/nux@^3.2.2":
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/@wordpress/nux/-/nux-3.2.4.tgz#e368d64c67193991a15a056248c904e6ba49ab7f"
   integrity sha512-5p/zg2fVL5+c7qHIWIV0IiKsRK6oRV29wO3pQbyfxex35UfxDd6SVZ7q+B96/WmIArdPx/o71ENwMT/YWrm1Uw==
@@ -9840,7 +9781,7 @@ postcss-selector-parser@^3.0.0, postcss-selector-parser@^3.1.0:
     indexes-of "^1.0.1"
     uniq "^1.0.1"
 
-postcss-selector-parser@^5.0.0, postcss-selector-parser@^5.0.0-rc.4:
+postcss-selector-parser@^5.0.0-rc.4:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-5.0.0.tgz#249044356697b33b64f1a8f7c80922dddee7195c"
   dependencies:
@@ -9848,7 +9789,7 @@ postcss-selector-parser@^5.0.0, postcss-selector-parser@^5.0.0-rc.4:
     indexes-of "^1.0.1"
     uniq "^1.0.1"
 
-postcss-selector-parser@^6.0.0:
+postcss-selector-parser@^6.0.0, postcss-selector-parser@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-6.0.2.tgz#934cf799d016c83411859e09dcecade01286ec5c"
   dependencies:
@@ -11622,29 +11563,29 @@ stylelint-config-recommended-scss@^3.2.0:
   dependencies:
     stylelint-config-recommended "^2.0.0"
 
-stylelint-config-recommended@^2.0.0, stylelint-config-recommended@^2.1.0:
+stylelint-config-recommended@^2.0.0, stylelint-config-recommended@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/stylelint-config-recommended/-/stylelint-config-recommended-2.2.0.tgz#46ab139db4a0e7151fd5f94af155512886c96d3f"
   integrity sha512-bZ+d4RiNEfmoR74KZtCKmsABdBJr4iXRiCso+6LtMJPw5rd/KnxUWTxht7TbafrTJK1YRjNgnN0iVZaJfc3xJA==
 
-stylelint-config-wordpress@13.1.0:
-  version "13.1.0"
-  resolved "https://registry.yarnpkg.com/stylelint-config-wordpress/-/stylelint-config-wordpress-13.1.0.tgz#235810d711f1d5682123914bc13c6c2af47d4fc4"
-  integrity sha512-dpKj2/d3/XjDVoOvQzd54GoM8Rj5zldluOZKkVhBCc4JYMc6r1VYL5hpcgIjqy/i2Hyqg4Rh7zTafE/2AWq//w==
+stylelint-config-wordpress@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/stylelint-config-wordpress/-/stylelint-config-wordpress-14.0.0.tgz#5cc05bf3f5f88026f8ba93eb854d7bf4e1c92e3e"
+  integrity sha512-Qo5I9Qa3yOy2AF+DwL9wjdNSm10ykT4lM+JvnCMDT2VBOl+5yMgpbQ9Xaa0gQXeCdcHdLprtmkBbrvDqf6DWSg==
   dependencies:
-    stylelint-config-recommended "^2.1.0"
+    stylelint-config-recommended "^2.2.0"
     stylelint-config-recommended-scss "^3.2.0"
-    stylelint-scss "^3.3.0"
+    stylelint-scss "^3.6.0"
 
-stylelint-scss@^3.3.0:
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/stylelint-scss/-/stylelint-scss-3.5.4.tgz#ff3ee989ac48f5c4f57313523b5ace059ffd6cc2"
-  integrity sha512-hEdEOfFXVqxWcUbenBONW/cAw5cJcEDasY8tGwKNAAn1GDHoZO1ATdWpr+iIk325mPGIQqVb1sUxsRxuL70trw==
+stylelint-scss@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/stylelint-scss/-/stylelint-scss-3.6.0.tgz#5fafe815b68119965f7aa75f0cfc1b04ae4021bd"
+  integrity sha512-Qpw0gl6iLBon5JNeFZjVYOEayd/e+WYIdY2vFhZuXeHC6jb8wl0wRZY97jATt/uxZzdtU3tGLAvJOUMuFp18vw==
   dependencies:
     lodash "^4.17.11"
     postcss-media-query-parser "^0.2.3"
     postcss-resolve-nested-selector "^0.1.1"
-    postcss-selector-parser "^5.0.0"
+    postcss-selector-parser "^6.0.2"
     postcss-value-parser "^3.3.1"
 
 stylelint@10.0.1:
