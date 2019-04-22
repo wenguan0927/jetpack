@@ -178,7 +178,7 @@ function jetpack_get_module_i18n( $key ) {
 
 			'shortcodes' => array(
 				'name' => _x( 'Shortcode Embeds', 'Module Name', 'jetpack' ),
-				'description' => _x( 'Embed media from popular sites without any coding.', 'Module Description', 'jetpack' ),
+				'description' => _x( 'Shortcodes are WordPress-specific markup that let you add media from popular sites. This feature is no longer necessary as the editor now handles media embeds rather gracefully.', 'Module Description', 'jetpack' ),
 			),
 
 			'shortlinks' => array(
