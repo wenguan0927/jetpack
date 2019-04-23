@@ -161,14 +161,9 @@ class Jetpack_Debug_Data {
 		);
 
 		/* Token information is private, but awareness if there one is set is helpful. */
-		$user_id     = get_current_user_id();
-		$user_tokens = Jetpack_Options::get_option( 'user_tokens' );
-		$blog_token  = Jetpack_Options::get_option( 'blog_token' );
-		$user_token  = null;
-		if ( is_array( $user_tokens ) && array_key_exists( $user_id, $user_tokens ) ) {
-			$user_token = $user_tokens[ $user_id ];
-		}
-		unset( $user_tokens );
+		$user_id    = get_current_user_id();
+		$blog_token = Jetpack_Data::get_access_token();
+		$user_token = Jetpack_Data::get_access_token( $user_id );
 
 		$tokenset = '';
 		if ( $blog_token ) {
@@ -193,12 +188,12 @@ class Jetpack_Debug_Data {
 		);
 		$debug_info['blog_token']   = array(
 			'label'   => 'Blog token',
-			'value'   => ( $blog_token ) ? $blog_token : 'Not set.',
+			'value'   => ( $blog_token ) ? $blog_token->secret : 'Not set.',
 			'private' => true,
 		);
 		$debug_info['user_token']   = array(
 			'label'   => 'User token',
-			'value'   => ( $user_token ) ? $user_token : 'Not set.',
+			'value'   => ( $user_token ) ? $user_token->secret : 'Not set.',
 			'private' => true,
 		);
 
