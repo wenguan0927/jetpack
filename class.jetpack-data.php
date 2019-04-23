@@ -9,44 +9,78 @@ class Jetpack_Data {
 	 * @return object|false
 	 */
 	public static function get_access_token( $user_id = false, $token_key = false ) {
-		if ( $user_id ) {
-			if ( !$tokens = Jetpack_Options::get_option( 'user_tokens' ) ) {
-				return false;
-			}
-			if ( $user_id === JETPACK_MASTER_USER ) {
-				if ( !$user_id = Jetpack_Options::get_option( 'master_user' ) ) {
-					return false;
-				}
-			}
-			if ( !isset( $tokens[$user_id] ) || !$token = $tokens[$user_id] ) {
-				return false;
-			}
-			$token_chunks = explode( '.', $token );
-			if ( empty( $token_chunks[1] ) || empty( $token_chunks[2] ) ) {
-				return false;
-			}
-			if ( $user_id != $token_chunks[2] ) {
-				return false;
-			}
-			$token = "{$token_chunks[0]}.{$token_chunks[1]}";
-		} else {
-			$token = Jetpack_Options::get_option( 'blog_token' );
-			if ( empty( $token ) ) {
-				return false;
-			}
+		$tokens = self::get_array_of_access_tokens( $user_id );
+
+		if ( ! $tokens ) {
+			return false;
 		}
 
 		if ( false !== $token_key ) {
 			$token_check = rtrim( $token_key, '.' ) . '.';
-			if ( ! hash_equals( substr( $token, 0, strlen( $token_check ) ), $token_check ) ) {
-				return false;
+
+			$valid_token = false;
+			foreach ( $tokens as $token ) {
+				if ( hash_equals( substr( $token->secret, 0, strlen( $token_check ) ), $token_check ) ) {
+					$valid_token = $token;
+				}
 			}
+
+			return $valid_token;
 		}
 
-		return (object) array(
-			'secret' => $token,
-			'external_user_id' => (int) $user_id,
-		);
+		return $tokens[0];
+	}
+
+	/**
+	 * In some cases, Jetpack can have multiple Blog Tokens. Return
+	 * all Blog Tokens (user_id=false) or all User Tokens matching the
+	 * provided user_id.
+	 *
+	 * @param int|false $user_id false: Return the Blog Tokens. int: Return that user's User Tokens.
+	 * @return array
+	 */
+	public static function get_array_of_access_tokens( $user_id = false ) {
+		if ( $user_id ) {
+			if ( !$user_tokens = Jetpack_Options::get_option( 'user_tokens' ) ) {
+				return array();
+			}
+			if ( $user_id === JETPACK_MASTER_USER ) {
+				if ( !$user_id = Jetpack_Options::get_option( 'master_user' ) ) {
+					return array();
+				}
+			}
+			if ( !isset( $user_tokens[$user_id] ) || !$token = $user_tokens[$user_id] ) {
+				return array();
+			}
+			$token_chunks = explode( '.', $token );
+			if ( empty( $token_chunks[1] ) || empty( $token_chunks[2] ) ) {
+				return array();
+			}
+			if ( $user_id != $token_chunks[2] ) {
+				return array();
+			}
+			$tokens = array( "{$token_chunks[0]}.{$token_chunks[1]}" );
+		} else {
+			$tokens = defined( 'JETPACK__BLOG_TOKEN' ) ? array( JETPACK__BLOG_TOKEN ) : array();
+
+			$token = Jetpack_Options::get_option( 'blog_token' );
+			if ( empty( $token ) && empty( $tokens ) ) {
+				return array();
+			}
+
+			$tokens[] = $token;
+		}
+
+		$return = array();
+
+		foreach ( $tokens as $token ) {
+			$return[] = (object) array(
+				'secret' => $token,
+				'external_user_id' => (int) $user_id,
+			);
+		}
+
+		return $return;
 	}
 
 	/**

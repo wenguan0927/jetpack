@@ -465,13 +465,31 @@ class Jetpack_Comments extends Highlander_Comments_Base {
 			$post_array['hc_avatar'] = htmlentities( $post_array['hc_avatar'] );
 		}
 
-		$check = Jetpack_Comments::sign_remote_comment_parameters( $post_array, Jetpack_Options::get_option( 'blog_token' ) );
-		if ( is_wp_error( $check ) ) {
-			wp_die( $check );
+		/* @todo: Refactor: go back to only checking one Blog Token
+		 * by using Jetpack_Data::get_access_token( false, $token_key ).
+		 */
+		$blog_tokens = Jetpack_Data::get_array_of_access_tokens();
+
+		$checks = array();
+		$errors = array();
+		$valid_check = false;
+		foreach ( $blog_tokens as $blog_token ) {
+			$check = Jetpack_Comments::sign_remote_comment_parameters( $post_array, $blog_token->secret );
+			if ( is_wp_error( $check ) ) {
+				$errors[] = $check;
+			}
+
+			if ( hash_equals( $check, $post_array['sig'] ) ) {
+				$valid_check = true;
+			}
+		}
+
+		if ( $errors && count( $errors ) === count( $blog_tokens ) ) {
+			wp_die( $errors[0] );
 		}
 
 		// Bail if token is expired or not valid
-		if ( $check !== $post_array['sig'] ) {
+		if ( ! $valid_check ) {
 			wp_die( __( 'Invalid security token.', 'jetpack' ) );
 		}
 
