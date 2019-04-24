@@ -2,21 +2,20 @@
 
 defined( 'ABSPATH' ) or die( 'No direct access, please.' );
 
-require_once( ABSPATH . WPINC . '/class-IXR.php' );
+require_once ABSPATH . WPINC . '/class-IXR.php';
 
 /**
  * IXR_Client
  *
  * @package IXR
  * @since 1.5
- *
  */
 class Jetpack_IXR_Client extends IXR_Client {
 	public $jetpack_args = null;
 
 	function __construct( $args = array(), $path = false, $port = 80, $timeout = 15 ) {
 		$defaults = array(
-			'url' => Jetpack::xmlrpc_api_url(),
+			'url'     => Jetpack::xmlrpc_api_url(),
 			'user_id' => 0,
 		);
 
@@ -28,10 +27,10 @@ class Jetpack_IXR_Client extends IXR_Client {
 	}
 
 	function query() {
-		$args = func_get_args();
-		$method = array_shift( $args );
+		$args    = func_get_args();
+		$method  = array_shift( $args );
 		$request = new IXR_Request( $method, $args );
-		$xml = trim( $request->getXml() );
+		$xml     = trim( $request->getXml() );
 
 		$response = Jetpack_Client::remote_request( $this->jetpack_args, $xml );
 
@@ -40,7 +39,7 @@ class Jetpack_IXR_Client extends IXR_Client {
 			return false;
 		}
 
-		if ( !$response ) {
+		if ( ! $response ) {
 			$this->error = new IXR_Error( -10520, 'Jetpack: Unknown Error' );
 			return false;
 		}
@@ -54,7 +53,7 @@ class Jetpack_IXR_Client extends IXR_Client {
 
 		// Now parse what we've got back
 		$this->message = new IXR_Message( $content );
-		if ( !$this->message->parse() ) {
+		if ( ! $this->message->parse() ) {
 			// XML error
 			$this->error = new IXR_Error( -32700, 'parse error. not well formed' );
 			return false;
@@ -104,11 +103,11 @@ class Jetpack_IXR_ClientMulticall extends Jetpack_IXR_Client {
 	}
 
 	function addCall() {
-		$args = func_get_args();
-		$methodName = array_shift( $args );
-		$struct = array(
+		$args          = func_get_args();
+		$methodName    = array_shift( $args );
+		$struct        = array(
 			'methodName' => $methodName,
-			'params' => $args
+			'params'     => $args,
 		);
 		$this->calls[] = $struct;
 	}
