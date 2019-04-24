@@ -34,9 +34,9 @@ class Jetpack_Network {
 	 * @var array
 	 */
 	private $setting_defaults = array(
-		'auto-connect'                  => 0,
-		'sub-site-connection-override'  => 1,
-		//'manage_auto_activated_modules' => 0,
+		'auto-connect'                 => 0,
+		'sub-site-connection-override' => 1,
+		// 'manage_auto_activated_modules' => 0,
 	);
 
 	/**
@@ -45,8 +45,8 @@ class Jetpack_Network {
 	 * @since 2.9
 	 */
 	private function __construct() {
-		require_once( ABSPATH . '/wp-admin/includes/plugin.php' ); // For the is_plugin... check
-		require_once( JETPACK__PLUGIN_DIR . 'modules/protect/shared-functions.php' ); // For managing the global whitelist
+		require_once ABSPATH . '/wp-admin/includes/plugin.php'; // For the is_plugin... check
+		require_once JETPACK__PLUGIN_DIR . 'modules/protect/shared-functions.php'; // For managing the global whitelist
 		/*
 		 * Sanity check to ensure the install is Multisite and we
 		 * are in Network Admin
@@ -94,7 +94,8 @@ class Jetpack_Network {
 	public function set_auto_activated_modules( $modules ) {
 		return $modules;
 
-		/* Remove the toggles for 2.9, re-evaluate how they're done and added for a 3.0 release. They don't feel quite right yet.
+		/*
+		 Remove the toggles for 2.9, re-evaluate how they're done and added for a 3.0 release. They don't feel quite right yet.
 		if( 1 == $this->get_option( 'manage_auto_activated_modules' ) ) {
 			return (array) $this->get_option( 'modules' );
 		} else {
@@ -135,7 +136,7 @@ class Jetpack_Network {
 	 */
 	public static function init() {
 		if ( ! self::$instance || ! is_a( self::$instance, 'Jetpack_Network' ) ) {
-			self::$instance = new Jetpack_Network;
+			self::$instance = new Jetpack_Network();
 		}
 
 		return self::$instance;
@@ -176,9 +177,9 @@ class Jetpack_Network {
 			/*
 			 * If this plugin was activated in the subsite individually
 			 * we do not want to call disconnect. Plugins activated
-		 	 * individually (before network activation) stay activated
-		 	 * when the network deactivation occurs
-		 	 */
+			  * individually (before network activation) stay activated
+			  * when the network deactivation occurs
+			  */
 			if ( ! in_array( 'jetpack/jetpack.php', $active_plugins ) ) {
 				Jetpack::disconnect();
 			}
@@ -198,12 +199,14 @@ class Jetpack_Network {
 			return;
 		}
 
-		$wp_admin_bar->add_node( array(
-			'parent' => 'network-admin',
-			'id'     => 'network-admin-jetpack',
-			'title'  => 'Jetpack',
-			'href'   => $this->get_url( 'network_admin_page' ),
-		) );
+		$wp_admin_bar->add_node(
+			array(
+				'parent' => 'network-admin',
+				'id'     => 'network-admin-jetpack',
+				'title'  => 'Jetpack',
+				'href'   => $this->get_url( 'network_admin_page' ),
+			)
+		);
 	}
 
 	/**
@@ -268,16 +271,16 @@ class Jetpack_Network {
 	 */
 	public function add_network_admin_menu() {
 		add_menu_page( 'Jetpack', 'Jetpack', 'jetpack_network_admin_page', 'jetpack', array( $this, 'wrap_network_admin_page' ), 'div', 3 );
-		$jetpack_sites_page_hook = add_submenu_page( 'jetpack', __( 'Jetpack Sites', 'jetpack' ), __( 'Sites', 'jetpack' ), 'jetpack_network_sites_page', 'jetpack', array( $this, 'wrap_network_admin_page' ) );
+		$jetpack_sites_page_hook    = add_submenu_page( 'jetpack', __( 'Jetpack Sites', 'jetpack' ), __( 'Sites', 'jetpack' ), 'jetpack_network_sites_page', 'jetpack', array( $this, 'wrap_network_admin_page' ) );
 		$jetpack_settings_page_hook = add_submenu_page( 'jetpack', __( 'Settings', 'jetpack' ), __( 'Settings', 'jetpack' ), 'jetpack_network_settings_page', 'jetpack-settings', array( $this, 'wrap_render_network_admin_settings_page' ) );
-		add_action( "admin_print_styles-$jetpack_sites_page_hook",  array( 'Jetpack_Admin_Page', 'load_wrapper_styles' ) );
-		add_action( "admin_print_styles-$jetpack_settings_page_hook",  array( 'Jetpack_Admin_Page', 'load_wrapper_styles' ) );
+		add_action( "admin_print_styles-$jetpack_sites_page_hook", array( 'Jetpack_Admin_Page', 'load_wrapper_styles' ) );
+		add_action( "admin_print_styles-$jetpack_settings_page_hook", array( 'Jetpack_Admin_Page', 'load_wrapper_styles' ) );
 		/**
 		 * As jetpack_register_genericons is by default fired off a hook,
 		 * the hook may have already fired by this point.
 		 * So, let's just trigger it manually.
 		 */
-		require_once( JETPACK__PLUGIN_DIR . '_inc/genericons.php' );
+		require_once JETPACK__PLUGIN_DIR . '_inc/genericons.php';
 		jetpack_register_genericons();
 
 		if ( ! wp_style_is( 'jetpack-icons', 'registered' ) ) {
@@ -318,7 +321,7 @@ class Jetpack_Network {
 						// Log error to state cookie for display later
 						/**
 						 * @todo Make state messages show on Jetpack NA pages
-						 **/
+						 */
 						Jetpack::state( 'missing_site_id', esc_html__( 'Site ID must be provided to register a sub-site.', 'jetpack' ) );
 						break;
 					}
@@ -357,14 +360,14 @@ class Jetpack_Network {
 
 	public function show_jetpack_notice() {
 		if ( isset( $_GET['action'] ) && 'connected' == $_GET['action'] ) {
-			$notice = __( 'Site successfully connected.', 'jetpack' );
+			$notice    = __( 'Site successfully connected.', 'jetpack' );
 			$classname = 'updated';
-		} else if ( isset( $_GET['action'] ) && 'connection_failed' == $_GET['action'] ) {
-			$notice = __( 'Site connection failed!', 'jetpack' );
+		} elseif ( isset( $_GET['action'] ) && 'connection_failed' == $_GET['action'] ) {
+			$notice    = __( 'Site connection failed!', 'jetpack' );
 			$classname = 'error';
 		}
 		?>
-		<div id="message" class="<?php echo esc_attr( $classname );?> jetpack-message jp-connect" style="display:block !important;">
+		<div id="message" class="<?php echo esc_attr( $classname ); ?> jetpack-message jp-connect" style="display:block !important;">
 			<p><?php echo esc_html( $notice ); ?></p>
 		</div>
 		<?php
@@ -426,7 +429,7 @@ class Jetpack_Network {
 		$secrets = $jp->generate_secrets( 'register' );
 		if (
 			empty( $secrets['secret_1'] ) ||
-			empty( $secrets['secret_2']  ) ||
+			empty( $secrets['secret_2'] ) ||
 			empty( $secrets['exp'] )
 		) {
 			return new Jetpack_Error( 'missing_secrets' );
@@ -446,8 +449,8 @@ class Jetpack_Network {
 		 * @todo Find out if sending the stats_id is necessary
 		 */
 		$stat_options = get_option( 'stats_options' );
-		$stat_id = $stat_options = isset( $stats_options['blog_id'] ) ? $stats_options['blog_id'] : null;
-		$user_id = get_current_user_id();
+		$stat_id      = $stat_options = isset( $stats_options['blog_id'] ) ? $stats_options['blog_id'] : null;
+		$user_id      = get_current_user_id();
 
 		$tracks_identity = jetpack_tracks_get_identity( $user_id );
 
@@ -457,7 +460,7 @@ class Jetpack_Network {
 		 * This is in contrast to regular standalone sites, where we use the helper
 		 * `Jetpack::get_assumed_site_creation_date()` to assume the site's creation date.
 		 */
-		$blog_details = get_blog_details();
+		$blog_details       = get_blog_details();
 		$site_creation_date = $blog_details->registered;
 
 		/**
@@ -486,7 +489,7 @@ class Jetpack_Network {
 				'_ui'                   => $tracks_identity['_ui'],
 				'_ut'                   => $tracks_identity['_ut'],
 				'site_created'          => $site_creation_date,
-				'jetpack_version'       => JETPACK__VERSION
+				'jetpack_version'       => JETPACK__VERSION,
 			),
 			'headers' => array(
 				'Accept' => 'application/json',
@@ -498,7 +501,9 @@ class Jetpack_Network {
 
 		// Attempt to retrieve shadow blog details
 		$response = Jetpack_Client::_wp_remote_request(
-			Jetpack::fix_url_for_bad_hosts( Jetpack::api_url( 'subsiteregister' ) ), $args, true
+			Jetpack::fix_url_for_bad_hosts( Jetpack::api_url( 'subsiteregister' ) ),
+			$args,
+			true
 		);
 
 		/*
@@ -536,11 +541,13 @@ class Jetpack_Network {
 			$jetpack_public = false;
 		}
 
-		Jetpack_Options::update_options( array(
-			'id'         => (int) $json->jetpack_id,
-			'blog_token' => (string) $json->jetpack_secret,
-			'public'     => $jetpack_public,
-		) );
+		Jetpack_Options::update_options(
+			array(
+				'id'         => (int) $json->jetpack_id,
+				'blog_token' => (string) $json->jetpack_secret,
+				'public'     => $jetpack_public,
+			)
+		);
 
 		/*
 		 * Update the subsiteregister method on wpcom so that it also sends back the
@@ -591,17 +598,19 @@ class Jetpack_Network {
 		 * connections will feed off this one
 		 */
 		if ( ! $main_active ) {
-			$url  = $this->get_url( array(
-				'name'    => 'subsiteregister',
-				'site_id' => 1,
-			) );
+			$url  = $this->get_url(
+				array(
+					'name'    => 'subsiteregister',
+					'site_id' => 1,
+				)
+			);
 			$data = array( 'url' => $jp->build_connect_url() );
 			Jetpack::init()->load_view( 'admin/must-connect-main-blog.php', $data );
 
 			return;
 		}
 
-		require_once( 'class.jetpack-network-sites-list-table.php' );
+		require_once 'class.jetpack-network-sites-list-table.php';
 		$myListTable = new Jetpack_Network_Sites_List_Table();
 		echo '<div class="wrap"><h2>' . __( 'Sites', 'jetpack' ) . '</h2>';
 		echo '<form method="post">';
@@ -622,7 +631,7 @@ class Jetpack_Network {
 		$is_connected = Jetpack::is_active();
 
 		$data = array(
-			'is_connected' => $is_connected
+			'is_connected' => $is_connected,
 		);
 		Jetpack::init()->load_view( 'admin/network-admin-header.php', $data );
 	}
@@ -653,7 +662,10 @@ class Jetpack_Network {
 		if ( is_wp_error( $result ) ) {
 			wp_safe_redirect(
 				add_query_arg(
-					array( 'page' => 'jetpack-settings', 'error' => 'jetpack_protect_whitelist' ),
+					array(
+						'page'  => 'jetpack-settings',
+						'error' => 'jetpack_protect_whitelist',
+					),
 					network_admin_url( 'admin.php' )
 				)
 			);
@@ -676,7 +688,8 @@ class Jetpack_Network {
 			$sub_site_connection_override = 1;
 		}
 
-		/* Remove the toggles for 2.9, re-evaluate how they're done and added for a 3.0 release. They don't feel quite right yet.
+		/*
+		 Remove the toggles for 2.9, re-evaluate how they're done and added for a 3.0 release. They don't feel quite right yet.
 		$manage_auto_activated_modules = 0;
 		if ( isset( $_POST['manage_auto_activated_modules'] ) ) {
 			$manage_auto_activated_modules = 1;
@@ -689,16 +702,19 @@ class Jetpack_Network {
 		*/
 
 		$data = array(
-			'auto-connect'                  => $auto_connect,
-			'sub-site-connection-override'  => $sub_site_connection_override,
-			//'manage_auto_activated_modules' => $manage_auto_activated_modules,
-			//'modules'                       => $modules,
+			'auto-connect'                 => $auto_connect,
+			'sub-site-connection-override' => $sub_site_connection_override,
+			// 'manage_auto_activated_modules' => $manage_auto_activated_modules,
+			// 'modules'                       => $modules,
 		);
 
 		update_site_option( $this->settings_name, $data );
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'jetpack-settings', 'updated' => 'true' ),
+				array(
+					'page'    => 'jetpack-settings',
+					'updated' => 'true',
+				),
 				network_admin_url( 'admin.php' )
 			)
 		);
@@ -713,7 +729,7 @@ class Jetpack_Network {
 		$this->network_admin_page_header();
 		$options = wp_parse_args( get_site_option( $this->settings_name ), $this->setting_defaults );
 
-		$modules = array();
+		$modules      = array();
 		$module_slugs = Jetpack::get_available_modules();
 		foreach ( $module_slugs as $slug ) {
 			$module           = Jetpack::get_module( $slug );
@@ -728,8 +744,8 @@ class Jetpack_Network {
 		}
 
 		$data = array(
-			'modules' => $modules,
-			'options' => $options,
+			'modules'                   => $modules,
+			'options'                   => $options,
 			'jetpack_protect_whitelist' => jetpack_protect_format_whitelist(),
 		);
 
@@ -747,7 +763,7 @@ class Jetpack_Network {
 	 * @return boolean
 	 **/
 	public function update_option( $key, $value ) {
-		$options  = get_site_option( $this->settings_name, $this->setting_defaults );
+		$options         = get_site_option( $this->settings_name, $this->setting_defaults );
 		$options[ $key ] = $value;
 
 		return update_site_option( $this->settings_name, $options );
