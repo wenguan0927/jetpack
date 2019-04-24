@@ -3,7 +3,7 @@
 // These constants can be set in wp-config.php to ensure sites behind proxies will still work.
 // Setting these constants, though, is *not* the preferred method. It's better to configure
 // the proxy to send the X-Forwarded-Port header.
-defined( 'JETPACK_SIGNATURE__HTTP_PORT'  ) or define( 'JETPACK_SIGNATURE__HTTP_PORT' , 80  );
+defined( 'JETPACK_SIGNATURE__HTTP_PORT' ) or define( 'JETPACK_SIGNATURE__HTTP_PORT', 80 );
 defined( 'JETPACK_SIGNATURE__HTTPS_PORT' ) or define( 'JETPACK_SIGNATURE__HTTPS_PORT', 443 );
 
 class Jetpack_Signature {
@@ -12,18 +12,19 @@ class Jetpack_Signature {
 
 	function __construct( $access_token, $time_diff = 0 ) {
 		$secret = explode( '.', $access_token );
-		if ( 2 != count( $secret ) )
+		if ( 2 != count( $secret ) ) {
 			return;
+		}
 
-		$this->token  = $secret[0];
-		$this->secret = $secret[1];
+		$this->token     = $secret[0];
+		$this->secret    = $secret[1];
 		$this->time_diff = $time_diff;
 	}
 
 	function sign_current_request( $override = array() ) {
 		if ( isset( $override['scheme'] ) ) {
 			$scheme = $override['scheme'];
-			if ( !in_array( $scheme, array( 'http', 'https' ) ) ) {
+			if ( ! in_array( $scheme, array( 'http', 'https' ) ) ) {
 				return new Jetpack_Error( 'invalid_scheme', 'Invalid URL scheme' );
 			}
 		} else {
@@ -43,20 +44,20 @@ class Jetpack_Signature {
 		if ( is_ssl() ) {
 			// 443: Standard Port
 			// 80: Assume we're behind a proxy without X-Forwarded-Port. Hardcoding "80" here means most sites
-			//     with SSL termination proxies (self-served, Cloudflare, etc.) don't need to fiddle with
-			//     the JETPACK_SIGNATURE__HTTPS_PORT constant. The code also implies we can't talk to a
-			//     site at https://example.com:80/ (which would be a strange configuration).
+			// with SSL termination proxies (self-served, Cloudflare, etc.) don't need to fiddle with
+			// the JETPACK_SIGNATURE__HTTPS_PORT constant. The code also implies we can't talk to a
+			// site at https://example.com:80/ (which would be a strange configuration).
 			// JETPACK_SIGNATURE__HTTPS_PORT: Set this constant in wp-config.php to the back end webserver's port
-			//                                if the site is behind a proxy running on port 443 without
-			//                                X-Forwarded-Port and the back end's port is *not* 80. It's better,
-			//                                though, to configure the proxy to send X-Forwarded-Port.
+			// if the site is behind a proxy running on port 443 without
+			// X-Forwarded-Port and the back end's port is *not* 80. It's better,
+			// though, to configure the proxy to send X-Forwarded-Port.
 			$port = in_array( $host_port, array( 443, 80, JETPACK_SIGNATURE__HTTPS_PORT ) ) ? '' : $host_port;
 		} else {
 			// 80: Standard Port
 			// JETPACK_SIGNATURE__HTTPS_PORT: Set this constant in wp-config.php to the back end webserver's port
-			//                                if the site is behind a proxy running on port 80 without
-			//                                X-Forwarded-Port. It's better, though, to configure the proxy to
-			//                                send X-Forwarded-Port.
+			// if the site is behind a proxy running on port 80 without
+			// X-Forwarded-Port. It's better, though, to configure the proxy to
+			// send X-Forwarded-Port.
 			$port = in_array( $host_port, array( 80, JETPACK_SIGNATURE__HTTP_PORT ) ) ? '' : $host_port;
 		}
 
@@ -64,7 +65,7 @@ class Jetpack_Signature {
 
 		if ( array_key_exists( 'body', $override ) && ! empty( $override['body'] ) ) {
 			$body = $override['body'];
-		} else if ( 'POST' == strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
+		} elseif ( 'POST' == strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
 			$body = isset( $GLOBALS['HTTP_RAW_POST_DATA'] ) ? $GLOBALS['HTTP_RAW_POST_DATA'] : null;
 
 			// Convert the $_POST to the body, if the body was empty. This is how arrays are hashed
@@ -74,7 +75,7 @@ class Jetpack_Signature {
 					$body = $_POST;
 				}
 			}
-		} else if ( 'PUT' == strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
+		} elseif ( 'PUT' == strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
 			// This is a little strange-looking, but there doesn't seem to be another way to get the PUT body
 			$raw_put_data = file_get_contents( 'php://input' );
 			parse_str( $raw_put_data, $body );
@@ -95,10 +96,10 @@ class Jetpack_Signature {
 
 		$a = array();
 		foreach ( array( 'token', 'timestamp', 'nonce', 'body-hash' ) as $parameter ) {
-			if ( isset( $override[$parameter] ) ) {
-				$a[$parameter] = $override[$parameter];
+			if ( isset( $override[ $parameter ] ) ) {
+				$a[ $parameter ] = $override[ $parameter ];
 			} else {
-				$a[$parameter] = isset( $_GET[$parameter] ) ? stripslashes( $_GET[$parameter] ) : '';
+				$a[ $parameter ] = isset( $_GET[ $parameter ] ) ? stripslashes( $_GET[ $parameter ] ) : '';
 			}
 		}
 
@@ -108,11 +109,11 @@ class Jetpack_Signature {
 
 	// body_hash v. body-hash is annoying.  Refactor to accept an array?
 	function sign_request( $token = '', $timestamp = 0, $nonce = '', $body_hash = '', $method = '', $url = '', $body = null, $verify_body_hash = true ) {
-		if ( !$this->secret ) {
+		if ( ! $this->secret ) {
 			return new Jetpack_Error( 'invalid_secret', 'Invalid secret' );
 		}
 
-		if ( !$this->token ) {
+		if ( ! $this->token ) {
 			return new Jetpack_Error( 'invalid_token', 'Invalid token' );
 		}
 
@@ -133,19 +134,19 @@ class Jetpack_Signature {
 		}
 
 		$required_parameters = array( 'token', 'timestamp', 'nonce', 'method', 'url' );
-		if ( !is_null( $body ) ) {
+		if ( ! is_null( $body ) ) {
 			$required_parameters[] = 'body_hash';
-			if ( !is_string( $body ) ) {
+			if ( ! is_string( $body ) ) {
 				return new Jetpack_Error( 'invalid_body', 'Body is malformed.' );
 			}
 		}
 
 		foreach ( $required_parameters as $required ) {
-			if ( !is_scalar( $$required ) ) {
+			if ( ! is_scalar( $$required ) ) {
 				return new Jetpack_Error( 'invalid_signature', sprintf( 'The required "%s" parameter is malformed.', str_replace( '_', '-', $required ) ) );
 			}
 
-			if ( !strlen( $$required ) ) {
+			if ( ! strlen( $$required ) ) {
 				return new Jetpack_Error( 'invalid_signature', sprintf( 'The required "%s" parameter is missing.', str_replace( '_', '-', $required ) ) );
 			}
 		}
@@ -161,23 +162,23 @@ class Jetpack_Signature {
 		}
 
 		$parsed = parse_url( $url );
-		if ( !isset( $parsed['host'] ) ) {
+		if ( ! isset( $parsed['host'] ) ) {
 			return new Jetpack_Error( 'invalid_signature', sprintf( 'The required "%s" parameter is malformed.', 'url' ) );
 		}
 
-		if ( !empty( $parsed['port'] ) ) {
+		if ( ! empty( $parsed['port'] ) ) {
 			$port = $parsed['port'];
 		} else {
 			if ( 'http' == $parsed['scheme'] ) {
 				$port = 80;
-			} else if ( 'https' == $parsed['scheme'] ) {
+			} elseif ( 'https' == $parsed['scheme'] ) {
 				$port = 443;
 			} else {
 				return new Jetpack_Error( 'unknown_scheme_port', "The scheme's port is unknown" );
 			}
 		}
 
-		if ( !ctype_digit( "$timestamp" ) || 10 < strlen( $timestamp ) ) { // If Jetpack is around in 275 years, you can blame mdawaffe for the bug.
+		if ( ! ctype_digit( "$timestamp" ) || 10 < strlen( $timestamp ) ) { // If Jetpack is around in 275 years, you can blame mdawaffe for the bug.
 			return new Jetpack_Error( 'invalid_signature', sprintf( 'The required "%s" parameter is malformed.', 'timestamp' ) );
 		}
 
@@ -202,9 +203,9 @@ class Jetpack_Signature {
 			// Normalized Query String
 		);
 
-		$normalized_request_pieces = array_merge( $normalized_request_pieces, $this->normalized_query_parameters( isset( $parsed['query'] ) ? $parsed['query'] : '' ) );
+		$normalized_request_pieces      = array_merge( $normalized_request_pieces, $this->normalized_query_parameters( isset( $parsed['query'] ) ? $parsed['query'] : '' ) );
 		$flat_normalized_request_pieces = array();
-		foreach ($normalized_request_pieces as $piece) {
+		foreach ( $normalized_request_pieces as $piece ) {
 			if ( is_array( $piece ) ) {
 				foreach ( $piece as $subpiece ) {
 					$flat_normalized_request_pieces[] = $subpiece;
@@ -222,18 +223,19 @@ class Jetpack_Signature {
 
 	function normalized_query_parameters( $query_string ) {
 		parse_str( $query_string, $array );
-		if ( get_magic_quotes_gpc() )
+		if ( get_magic_quotes_gpc() ) {
 			$array = stripslashes_deep( $array );
+		}
 
 		unset( $array['signature'] );
 
 		$names  = array_keys( $array );
 		$values = array_values( $array );
 
-		$names  = array_map( array( $this, 'encode_3986' ), $names  );
+		$names  = array_map( array( $this, 'encode_3986' ), $names );
 		$values = array_map( array( $this, 'encode_3986' ), $values );
 
-		$pairs  = array_map( array( $this, 'join_with_equal_sign' ), $names, $values );
+		$pairs = array_map( array( $this, 'join_with_equal_sign' ), $names, $values );
 
 		sort( $pairs );
 
