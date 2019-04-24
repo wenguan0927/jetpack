@@ -3,7 +3,7 @@
  * Nosara Tracks for Jetpack
  */
 
-require_once( dirname( __FILE__ ) . '/_inc/lib/tracks/client.php' );
+require_once dirname( __FILE__ ) . '/_inc/lib/tracks/client.php';
 
 class JetpackTracking {
 	static $product_name = 'jetpack';
@@ -14,20 +14,24 @@ class JetpackTracking {
 		}
 
 		// For tracking stuff via js/ajax
-		add_action( 'admin_enqueue_scripts',     array( __CLASS__, 'enqueue_tracks_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_tracks_scripts' ) );
 
-		add_action( 'jetpack_activate_module',   array( __CLASS__, 'track_activate_module'), 1, 1 );
-		add_action( 'jetpack_deactivate_module', array( __CLASS__, 'track_deactivate_module'), 1, 1 );
-		add_action( 'jetpack_user_authorized',   array( __CLASS__, 'track_user_linked' ) );
-		add_action( 'wp_login_failed',           array( __CLASS__, 'track_failed_login_attempts' ) );
+		add_action( 'jetpack_activate_module', array( __CLASS__, 'track_activate_module' ), 1, 1 );
+		add_action( 'jetpack_deactivate_module', array( __CLASS__, 'track_deactivate_module' ), 1, 1 );
+		add_action( 'jetpack_user_authorized', array( __CLASS__, 'track_user_linked' ) );
+		add_action( 'wp_login_failed', array( __CLASS__, 'track_failed_login_attempts' ) );
 	}
 
 	static function enqueue_tracks_scripts() {
 		wp_enqueue_script( 'jptracks', plugins_url( '_inc/lib/tracks/tracks-ajax.js', JETPACK__PLUGIN_FILE ), array(), JETPACK__VERSION, true );
-		wp_localize_script( 'jptracks', 'jpTracksAJAX', array(
-			'ajaxurl'            => admin_url( 'admin-ajax.php' ),
-			'jpTracksAJAX_nonce' => wp_create_nonce( 'jp-tracks-ajax-nonce' ),
-		) );
+		wp_localize_script(
+			'jptracks',
+			'jpTracksAJAX',
+			array(
+				'ajaxurl'            => admin_url( 'admin-ajax.php' ),
+				'jpTracksAJAX_nonce' => wp_create_nonce( 'jp-tracks-ajax-nonce' ),
+			)
+		);
 	}
 
 	/* User has linked their account */
@@ -61,11 +65,17 @@ class JetpackTracking {
 
 	/* Failed login attempts */
 	static function track_failed_login_attempts( $login ) {
-		require_once( JETPACK__PLUGIN_DIR . 'modules/protect/shared-functions.php' );
-		self::record_user_event( 'failed_login', array( 'origin_ip' => jetpack_protect_get_ip(), 'login' => $login ) );
+		require_once JETPACK__PLUGIN_DIR . 'modules/protect/shared-functions.php';
+		self::record_user_event(
+			'failed_login',
+			array(
+				'origin_ip' => jetpack_protect_get_ip(),
+				'login'     => $login,
+			)
+		);
 	}
 
-	static function record_user_event( $event_type, $data= array(), $user = null ) {
+	static function record_user_event( $event_type, $data = array(), $user = null ) {
 
 		if ( ! $user ) {
 			$user = wp_get_current_user();
@@ -89,4 +99,4 @@ class JetpackTracking {
 	}
 }
 
-add_action( 'init',  array( 'JetpackTracking', 'track_jetpack_usage' ) );
+add_action( 'init', array( 'JetpackTracking', 'track_jetpack_usage' ) );
