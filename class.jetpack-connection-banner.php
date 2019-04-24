@@ -33,7 +33,7 @@ class Jetpack_Connection_Banner {
 	 *              The param $slide_num was removed since we removed all slides but the first one.
 	 * @since 4.4.0
 	 *
-	 * @param string     $jp_version_banner_added A short version of when the banner was added. Ex. 44
+	 * @param string $jp_version_banner_added A short version of when the banner was added. Ex. 44
 	 *
 	 * @return string
 	 */
@@ -129,7 +129,7 @@ class Jetpack_Connection_Banner {
 			'jetpack-connection-banner-js',
 			'jp_banner',
 			array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'ajax_url'              => admin_url( 'admin-ajax.php' ),
 				'connectionBannerNonce' => wp_create_nonce( 'jp-connection-banner-nonce' ),
 			)
 		);
@@ -163,18 +163,22 @@ class Jetpack_Connection_Banner {
 							<img
 								src="<?php echo plugins_url( 'images/jetpack-powering-up.svg', JETPACK__PLUGIN_FILE ); ?>"
 								class="jp-wpcom-connect__hide-phone-and-smaller"
-								alt="<?php esc_attr_e(
+								alt="
+								<?php
+								esc_attr_e(
 									'Jetpack premium services offer even more powerful performance, security, ' .
 									'and revenue tools to help you keep your site safe, fast, and help generate income.',
 									'jetpack'
-								); ?>"
+								);
+								?>
+								"
 								height="auto"
 								width="225"
 								/>
 						</div>
 
 						<div class="jp-wpcom-connect__slide-text">
-							<h2><?php esc_html_e( 'Simplify your site security and performance with Jetpack', 'jetpack' ) ?></h2>
+							<h2><?php esc_html_e( 'Simplify your site security and performance with Jetpack', 'jetpack' ); ?></h2>
 
 							<p>
 								<?php
@@ -236,7 +240,7 @@ class Jetpack_Connection_Banner {
 				<?php endif; ?>
 
 				<div class="jp-connect-full__step-header">
-					<h2 class="jp-connect-full__step-header-title"><?php esc_html_e( 'Activate essential WordPress security and performance tools by setting up Jetpack', 'jetpack' ) ?></h2>
+					<h2 class="jp-connect-full__step-header-title"><?php esc_html_e( 'Activate essential WordPress security and performance tools by setting up Jetpack', 'jetpack' ); ?></h2>
 				</div>
 
 				<div class="jp-connect-full__row">
@@ -248,14 +252,16 @@ class Jetpack_Connection_Banner {
 							/>
 						</div>
 						<div class="jp-connect-full__slide-card">
-							<p><?php
+							<p>
+							<?php
 								esc_html_e(
 									'Jetpack protects you against brute force attacks and unauthorized logins. ' .
 									'Basic protection is always free, while premium plans add unlimited backups of your whole site, ' .
 									'spam protection, malware scanning, and automated fixes.',
 									'jetpack'
 								);
-								?></p>
+							?>
+								</p>
 						</div>
 					</div>
 					<div class="jp-connect-full__slide">
@@ -266,14 +272,16 @@ class Jetpack_Connection_Banner {
 							/>
 						</div>
 						<div class="jp-connect-full__slide-card">
-							<p><?php
+							<p>
+							<?php
 								esc_html_e(
-									"Activate site accelerator tools and watch your page load times and hosting costs drop—" .
+									'Activate site accelerator tools and watch your page load times and hosting costs drop—' .
 									"we'll optimize your images and serve them from our own powerful global network of servers, " .
-									"and speed up your mobile site to reduce bandwidth usage.",
+									'and speed up your mobile site to reduce bandwidth usage.',
 									'jetpack'
 								);
-								?></p>
+							?>
+								</p>
 						</div>
 					</div>
 				</div>
@@ -289,9 +297,13 @@ class Jetpack_Connection_Banner {
 				<?php if ( 'plugins' === $current_screen->base ) : ?>
 					<p class="jp-connect-full__dismiss-paragraph">
 						<a>
-							<?php echo esc_html_x(
-								'Not now, thank you.', 'a link that closes the modal window that offers to connect Jetpack', 'jetpack'
-							); ?>
+							<?php
+							echo esc_html_x(
+								'Not now, thank you.',
+								'a link that closes the modal window that offers to connect Jetpack',
+								'jetpack'
+							);
+							?>
 						</a>
 					</p>
 				<?php endif; ?>
