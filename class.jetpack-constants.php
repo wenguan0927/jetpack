@@ -40,7 +40,7 @@ class Jetpack_Constants {
 	 * @return bool
 	 */
 	public static function is_true( $name ) {
-		return self::is_defined( $name) && self::get_constant( $name );
+		return self::is_defined( $name ) && self::get_constant( $name );
 	}
 
 	/**
@@ -52,7 +52,7 @@ class Jetpack_Constants {
 	 * @return mixed null if the constant does not exist or the value of the constant.
 	 */
 	public static function get_constant( $name ) {
-		if ( array_key_exists( $name,  self::$set_constants ) ) {
+		if ( array_key_exists( $name, self::$set_constants ) ) {
 			return self::$set_constants[ $name ];
 		}
 
