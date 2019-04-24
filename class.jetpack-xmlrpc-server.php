@@ -21,28 +21,31 @@ class Jetpack_XMLRPC_Server {
 	 */
 	function xmlrpc_methods( $core_methods ) {
 		$jetpack_methods = array(
-			'jetpack.jsonAPI'           => array( $this, 'json_api' ),
-			'jetpack.verifyAction'      => array( $this, 'verify_action' ),
-			'jetpack.remoteRegister'    => array( $this, 'remote_register' ),
-			'jetpack.remoteProvision'   => array( $this, 'remote_provision' ),
+			'jetpack.jsonAPI'         => array( $this, 'json_api' ),
+			'jetpack.verifyAction'    => array( $this, 'verify_action' ),
+			'jetpack.remoteRegister'  => array( $this, 'remote_register' ),
+			'jetpack.remoteProvision' => array( $this, 'remote_provision' ),
 		);
 
 		$this->user = $this->login();
 
 		if ( $this->user ) {
-			$jetpack_methods = array_merge( $jetpack_methods, array(
-				'jetpack.testConnection'    => array( $this, 'test_connection' ),
-				'jetpack.testAPIUserCode'   => array( $this, 'test_api_user_code' ),
-				'jetpack.featuresAvailable' => array( $this, 'features_available' ),
-				'jetpack.featuresEnabled'   => array( $this, 'features_enabled' ),
-				'jetpack.disconnectBlog'    => array( $this, 'disconnect_blog' ),
-				'jetpack.unlinkUser'        => array( $this, 'unlink_user' ),
-				'jetpack.syncObject'        => array( $this, 'sync_object' ),
-				'jetpack.idcUrlValidation'  => array( $this, 'validate_urls_for_idc_mitigation' ),
-			) );
+			$jetpack_methods = array_merge(
+				$jetpack_methods,
+				array(
+					'jetpack.testConnection'    => array( $this, 'test_connection' ),
+					'jetpack.testAPIUserCode'   => array( $this, 'test_api_user_code' ),
+					'jetpack.featuresAvailable' => array( $this, 'features_available' ),
+					'jetpack.featuresEnabled'   => array( $this, 'features_enabled' ),
+					'jetpack.disconnectBlog'    => array( $this, 'disconnect_blog' ),
+					'jetpack.unlinkUser'        => array( $this, 'unlink_user' ),
+					'jetpack.syncObject'        => array( $this, 'sync_object' ),
+					'jetpack.idcUrlValidation'  => array( $this, 'validate_urls_for_idc_mitigation' ),
+				)
+			);
 
 			if ( isset( $core_methods['metaWeblog.editPost'] ) ) {
-				$jetpack_methods['metaWeblog.newMediaObject'] = $core_methods['metaWeblog.newMediaObject'];
+				$jetpack_methods['metaWeblog.newMediaObject']      = $core_methods['metaWeblog.newMediaObject'];
 				$jetpack_methods['jetpack.updateAttachmentParent'] = array( $this, 'update_attachment_parent' );
 			}
 
@@ -75,8 +78,8 @@ class Jetpack_XMLRPC_Server {
 	function bootstrap_xmlrpc_methods() {
 		return array(
 			'jetpack.verifyRegistration' => array( $this, 'verify_registration' ),
-			'jetpack.remoteAuthorize' => array( $this, 'remote_authorize' ),
-			'jetpack.remoteRegister' => array( $this, 'remote_register' ),
+			'jetpack.remoteAuthorize'    => array( $this, 'remote_authorize' ),
+			'jetpack.remoteRegister'     => array( $this, 'remote_register' ),
 		);
 	}
 
@@ -98,7 +101,7 @@ class Jetpack_XMLRPC_Server {
 		$user = get_user_by( 'id', $request['state'] );
 		JetpackTracking::record_user_event( 'jpc_remote_authorize_begin', array(), $user );
 
-		foreach( array( 'secret', 'state', 'redirect_uri', 'code' ) as $required ) {
+		foreach ( array( 'secret', 'state', 'redirect_uri', 'code' ) as $required ) {
 			if ( ! isset( $request[ $required ] ) || empty( $request[ $required ] ) ) {
 				return $this->error( new Jetpack_Error( 'missing_parameter', 'One or more parameters is missing from the request.', 400 ), 'jpc_remote_authorize_fail' );
 			}
@@ -120,8 +123,8 @@ class Jetpack_XMLRPC_Server {
 
 		wp_set_current_user( $request['state'] );
 
-		$client_server = new Jetpack_Client_Server;
-		$result = $client_server->authorize( $request );
+		$client_server = new Jetpack_Client_Server();
+		$result        = $client_server->authorize( $request );
 
 		if ( is_wp_error( $result ) ) {
 			return $this->error( $result, 'jpc_remote_authorize_fail' );
@@ -213,7 +216,7 @@ class Jetpack_XMLRPC_Server {
 		JetpackTracking::record_user_event( 'jpc_remote_register_success' );
 
 		return array(
-			'client_id' => Jetpack_Options::get_option( 'id' )
+			'client_id' => Jetpack_Options::get_option( 'id' ),
 		);
 	}
 
@@ -327,10 +330,13 @@ class Jetpack_XMLRPC_Server {
 			Jetpack::load_xml_rpc_client();
 			$ixr_client = new Jetpack_IXR_Client();
 		}
-		$ixr_client->query( 'jetpack.getUserAccessToken', array(
-			'nonce'            => sanitize_text_field( $request['nonce'] ),
-			'external_user_id' => $user->ID,
-		) );
+		$ixr_client->query(
+			'jetpack.getUserAccessToken',
+			array(
+				'nonce'            => sanitize_text_field( $request['nonce'] ),
+				'external_user_id' => $user->ID,
+			)
+		);
 
 		$token = $ixr_client->isError() ? false : $ixr_client->getResponse();
 		if ( empty( $token ) ) {
@@ -382,23 +388,31 @@ class Jetpack_XMLRPC_Server {
 
 	private function tracks_record_error( $name, $error, $user = null ) {
 		if ( is_wp_error( $error ) ) {
-			JetpackTracking::record_user_event( $name, array(
-				'error_code' => $error->get_error_code(),
-				'error_message' => $error->get_error_message()
-			), $user );
-		} elseif( is_a( $error, 'IXR_Error' ) ) {
-			JetpackTracking::record_user_event( $name, array(
-				'error_code' => $error->code,
-				'error_message' => $error->message
-			), $user );
+			JetpackTracking::record_user_event(
+				$name,
+				array(
+					'error_code'    => $error->get_error_code(),
+					'error_message' => $error->get_error_message(),
+				),
+				$user
+			);
+		} elseif ( is_a( $error, 'IXR_Error' ) ) {
+			JetpackTracking::record_user_event(
+				$name,
+				array(
+					'error_code'    => $error->code,
+					'error_message' => $error->message,
+				),
+				$user
+			);
 		}
 
 		return $error;
 	}
 
 	/**
-	* Verifies that Jetpack.WordPress.com received a registration request from this site
-	*/
+	 * Verifies that Jetpack.WordPress.com received a registration request from this site
+	 */
 	function verify_registration( $data ) {
 		// failure modes will be recorded in tracks in the verify_action method
 		return $this->verify_action( array( 'register', $data[0], $data[1] ) );
@@ -428,10 +442,10 @@ class Jetpack_XMLRPC_Server {
 	 * invalid_state: supplied state does not match the stored state
 	 */
 	function verify_action( $params ) {
-		$action = $params[0];
-		$verify_secret = $params[1];
-		$state = isset( $params[2] ) ? $params[2] : '';
-		$user = get_user_by( 'id', $state );
+		$action                    = $params[0];
+		$verify_secret             = $params[1];
+		$state                     = isset( $params[2] ) ? $params[2] : '';
+		$user                      = get_user_by( 'id', $state );
 		$tracks_failure_event_name = '';
 
 		if ( 'authorize' === $action ) {
@@ -450,11 +464,11 @@ class Jetpack_XMLRPC_Server {
 
 		if ( empty( $verify_secret ) ) {
 			return $this->error( new Jetpack_Error( 'verify_secret_1_missing', sprintf( 'The required "%s" parameter is missing.', 'secret_1' ), 400 ), $tracks_failure_event_name, $user );
-		} else if ( ! is_string( $verify_secret ) ) {
+		} elseif ( ! is_string( $verify_secret ) ) {
 			return $this->error( new Jetpack_Error( 'verify_secret_1_malformed', sprintf( 'The required "%s" parameter is malformed.', 'secret_1' ), 400 ), $tracks_failure_event_name, $user );
-		} else if ( empty( $state ) ) {
+		} elseif ( empty( $state ) ) {
 			return $this->error( new Jetpack_Error( 'state_missing', sprintf( 'The required "%s" parameter is missing.', 'state' ), 400 ), $tracks_failure_event_name, $user );
-		} else if ( ! ctype_digit( $state ) ) {
+		} elseif ( ! ctype_digit( $state ) ) {
 			return $this->error( new Jetpack_Error( 'state_malformed', sprintf( 'The required "%s" parameter is malformed.', 'state' ), 400 ), $tracks_failure_event_name, $user );
 		}
 
@@ -510,7 +524,7 @@ class Jetpack_XMLRPC_Server {
 				$this->error = $user;
 			}
 			return false;
-		} else if ( !$user ) { // Shouldn't happen.
+		} elseif ( ! $user ) { // Shouldn't happen.
 			$this->error = new Jetpack_Error( 'invalid_request', 'Invalid Request', 403 );
 			return false;
 		}
@@ -529,25 +543,25 @@ class Jetpack_XMLRPC_Server {
 			$this->tracks_record_error( $tracks_event_name, $error, $user );
 		}
 
-		if ( !is_null( $error ) ) {
+		if ( ! is_null( $error ) ) {
 			$this->error = $error;
 		}
 
 		if ( is_wp_error( $this->error ) ) {
 			$code = $this->error->get_error_data();
-			if ( !$code ) {
+			if ( ! $code ) {
 				$code = -10520;
 			}
 			$message = sprintf( 'Jetpack: [%s] %s', $this->error->get_error_code(), $this->error->get_error_message() );
 			return new IXR_Error( $code, $message );
-		} else if ( is_a( $this->error, 'IXR_Error' ) ) {
+		} elseif ( is_a( $this->error, 'IXR_Error' ) ) {
 			return $this->error;
 		}
 
 		return false;
 	}
 
-/* API Methods */
+	/* API Methods */
 
 	/**
 	 * Just authenticates with the given Jetpack credentials.
@@ -564,16 +578,17 @@ class Jetpack_XMLRPC_Server {
 		$nonce     = (string) $args[2];
 		$verify    = (string) $args[3];
 
-		if ( !$client_id || !$user_id || !strlen( $nonce ) || 32 !== strlen( $verify ) ) {
+		if ( ! $client_id || ! $user_id || ! strlen( $nonce ) || 32 !== strlen( $verify ) ) {
 			return false;
 		}
 
 		$user = get_user_by( 'id', $user_id );
-		if ( !$user || is_wp_error( $user ) ) {
+		if ( ! $user || is_wp_error( $user ) ) {
 			return false;
 		}
 
-		/* debugging
+		/*
+		 debugging
 		error_log( "CLIENT: $client_id" );
 		error_log( "USER:   $user_id" );
 		error_log( "NONCE:  $nonce" );
@@ -583,16 +598,22 @@ class Jetpack_XMLRPC_Server {
 		$jetpack_token = Jetpack_Data::get_access_token( $user_id );
 
 		$api_user_code = get_user_meta( $user_id, "jetpack_json_api_$client_id", true );
-		if ( !$api_user_code ) {
+		if ( ! $api_user_code ) {
 			return false;
 		}
 
-		$hmac = hash_hmac( 'md5', json_encode( (object) array(
-			'client_id' => (int) $client_id,
-			'user_id'   => (int) $user_id,
-			'nonce'     => (string) $nonce,
-			'code'      => (string) $api_user_code,
-		) ), $jetpack_token->secret );
+		$hmac = hash_hmac(
+			'md5',
+			json_encode(
+				(object) array(
+					'client_id' => (int) $client_id,
+					'user_id'   => (int) $user_id,
+					'nonce'     => (string) $nonce,
+					'code'      => (string) $api_user_code,
+				)
+			),
+			$jetpack_token->secret
+		);
 
 		if ( ! hash_equals( $hmac, $verify ) ) {
 			return false;
@@ -602,9 +623,10 @@ class Jetpack_XMLRPC_Server {
 	}
 
 	/**
-	* Disconnect this blog from the connected wordpress.com account
-	* @return boolean
-	*/
+	 * Disconnect this blog from the connected wordpress.com account
+	 *
+	 * @return boolean
+	 */
 	function disconnect_blog() {
 
 		// For tracking
@@ -638,7 +660,7 @@ class Jetpack_XMLRPC_Server {
 		require_once dirname( __FILE__ ) . '/sync/class.jetpack-sync-sender.php';
 
 		$sync_module = Jetpack_Sync_Modules::get_module( $module_name );
-		$codec = Jetpack_Sync_Sender::get_instance()->get_codec();
+		$codec       = Jetpack_Sync_Sender::get_instance()->get_codec();
 
 		return $codec->encode( $sync_module->get_object_by_id( $object_type, $id ) );
 	}
@@ -665,7 +687,7 @@ class Jetpack_XMLRPC_Server {
 	 */
 	function features_available() {
 		$raw_modules = Jetpack::get_available_modules();
-		$modules = array();
+		$modules     = array();
 		foreach ( $raw_modules as $module ) {
 			$modules[] = Jetpack::get_module_slug( $module );
 		}
@@ -680,7 +702,7 @@ class Jetpack_XMLRPC_Server {
 	 */
 	function features_enabled() {
 		$raw_modules = Jetpack::get_active_modules();
-		$modules = array();
+		$modules     = array();
 		foreach ( $raw_modules as $module ) {
 			$modules[] = Jetpack::get_module_slug( $module );
 		}
@@ -692,14 +714,16 @@ class Jetpack_XMLRPC_Server {
 		$attachment_id = (int) $args[0];
 		$parent_id     = (int) $args[1];
 
-		return wp_update_post( array(
-			'ID'          => $attachment_id,
-			'post_parent' => $parent_id,
-		) );
+		return wp_update_post(
+			array(
+				'ID'          => $attachment_id,
+				'post_parent' => $parent_id,
+			)
+		);
 	}
 
 	function json_api( $args = array() ) {
-		$json_api_args = $args[0];
+		$json_api_args        = $args[0];
 		$verify_api_user_args = $args[1];
 
 		$method       = (string) $json_api_args[0];
@@ -708,24 +732,25 @@ class Jetpack_XMLRPC_Server {
 		$user_details = (array) $json_api_args[4];
 		$locale       = (string) $json_api_args[5];
 
-		if ( !$verify_api_user_args ) {
+		if ( ! $verify_api_user_args ) {
 			$user_id = 0;
 		} elseif ( 'internal' === $verify_api_user_args[0] ) {
 			$user_id = (int) $verify_api_user_args[1];
 			if ( $user_id ) {
 				$user = get_user_by( 'id', $user_id );
-				if ( !$user || is_wp_error( $user ) ) {
+				if ( ! $user || is_wp_error( $user ) ) {
 					return false;
 				}
 			}
 		} else {
 			$user_id = call_user_func( array( $this, 'test_api_user_code' ), $verify_api_user_args );
-			if ( !$user_id ) {
+			if ( ! $user_id ) {
 				return false;
 			}
 		}
 
-		/* debugging
+		/*
+		 debugging
 		error_log( "-- begin json api via jetpack debugging -- " );
 		error_log( "METHOD: $method" );
 		error_log( "URL: $url" );
@@ -740,13 +765,13 @@ class Jetpack_XMLRPC_Server {
 			$new_locale = $locale;
 			if ( strpos( $locale, '-' ) !== false ) {
 				$locale_pieces = explode( '-', $locale );
-				$new_locale = $locale_pieces[0];
-				$new_locale .= ( ! empty( $locale_pieces[1] ) ) ? '_' . strtoupper( $locale_pieces[1] ) : '';
+				$new_locale    = $locale_pieces[0];
+				$new_locale   .= ( ! empty( $locale_pieces[1] ) ) ? '_' . strtoupper( $locale_pieces[1] ) : '';
 			} else {
 				// .com might pass 'fr' because thats what our language files are named as, where core seems
 				// to do fr_FR - so try that if we don't think we can load the file.
 				if ( ! file_exists( WP_LANG_DIR . '/' . $locale . '.mo' ) ) {
-					$new_locale =  $locale . '_' . strtoupper( $locale );
+					$new_locale = $locale . '_' . strtoupper( $locale );
 				}
 			}
 
@@ -760,7 +785,7 @@ class Jetpack_XMLRPC_Server {
 		wp_set_current_user( $user_id );
 
 		$token = Jetpack_Data::get_access_token( get_current_user_id() );
-		if ( !$token || is_wp_error( $token ) ) {
+		if ( ! $token || is_wp_error( $token ) ) {
 			return false;
 		}
 
@@ -771,14 +796,14 @@ class Jetpack_XMLRPC_Server {
 		require_once ABSPATH . 'wp-admin/includes/admin.php';
 
 		require_once JETPACK__PLUGIN_DIR . 'class.json-api.php';
-		$api = WPCOM_JSON_API::init( $method, $url, $post_body );
+		$api                        = WPCOM_JSON_API::init( $method, $url, $post_body );
 		$api->token_details['user'] = $user_details;
 		require_once JETPACK__PLUGIN_DIR . 'class.json-api-endpoints.php';
 
 		$display_errors = ini_set( 'display_errors', 0 );
 		ob_start();
 		$content_type = $api->serve( false );
-		$output = ob_get_clean();
+		$output       = ob_get_clean();
 		ini_set( 'display_errors', $display_errors );
 
 		$nonce = wp_generate_password( 10, false );
