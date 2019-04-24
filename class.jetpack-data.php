@@ -8,15 +8,15 @@ class Jetpack_Data {
 	 */
 	public static function get_access_token( $user_id = false ) {
 		if ( $user_id ) {
-			if ( !$tokens = Jetpack_Options::get_option( 'user_tokens' ) ) {
+			if ( ! $tokens = Jetpack_Options::get_option( 'user_tokens' ) ) {
 				return false;
 			}
 			if ( $user_id === JETPACK_MASTER_USER ) {
-				if ( !$user_id = Jetpack_Options::get_option( 'master_user' ) ) {
+				if ( ! $user_id = Jetpack_Options::get_option( 'master_user' ) ) {
 					return false;
 				}
 			}
-			if ( !isset( $tokens[$user_id] ) || !$token = $tokens[$user_id] ) {
+			if ( ! isset( $tokens[ $user_id ] ) || ! $token = $tokens[ $user_id ] ) {
 				return false;
 			}
 			$token_chunks = explode( '.', $token );
@@ -35,7 +35,7 @@ class Jetpack_Data {
 		}
 
 		return (object) array(
-			'secret' => $token,
+			'secret'           => $token,
 			'external_user_id' => (int) $user_id,
 		);
 	}
@@ -44,7 +44,7 @@ class Jetpack_Data {
 	 * This function mirrors Jetpack_Data::is_usable_domain() in the WPCOM codebase.
 	 *
 	 * @param $domain
-	 * @param array $extra
+	 * @param array  $extra
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -89,7 +89,7 @@ class Jetpack_Data {
 		}
 
 		// No WPCOM subdomains
-		if ( preg_match( '#\.wordpress\.com$#i', $domain ) ) {
+		if ( preg_match( '#\.WordPress\.com$#i', $domain ) ) {
 			return new WP_Error( 'fail_subdomain_wpcom', sprintf( __( 'Domain `%1$s` just failed is_usable_domain check as it is a subdomain of WordPress.com.', 'jetpack' ), $domain ) );
 		}
 
