@@ -10,17 +10,17 @@ class Jetpack_Client {
 	 */
 	public static function remote_request( $args, $body = null ) {
 		$defaults = array(
-			'url' => '',
-			'user_id' => 0,
-			'blog_id' => 0,
+			'url'           => '',
+			'user_id'       => 0,
+			'blog_id'       => 0,
 			'auth_location' => JETPACK_CLIENT__AUTH_LOCATION,
-			'method' => 'POST',
-			'timeout' => 10,
-			'redirection' => 0,
-			'headers' => array(),
-			'stream' => false,
-			'filename' => null,
-			'sslverify' => true,
+			'method'        => 'POST',
+			'timeout'       => 10,
+			'redirection'   => 0,
+			'headers'       => array(),
+			'stream'        => false,
+			'filename'      => null,
+			'sslverify'     => true,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -32,7 +32,7 @@ class Jetpack_Client {
 		}
 
 		$token = Jetpack_Data::get_access_token( $args['user_id'] );
-		if ( !$token ) {
+		if ( ! $token ) {
 			return new Jetpack_Error( 'missing_token' );
 		}
 
@@ -41,9 +41,9 @@ class Jetpack_Client {
 		$timeout = intval( $args['timeout'] );
 
 		$redirection = $args['redirection'];
-		$stream = $args['stream'];
-		$filename = $args['filename'];
-		$sslverify = $args['sslverify'];
+		$stream      = $args['stream'];
+		$filename    = $args['filename'];
+		$sslverify   = $args['sslverify'];
 
 		$request = compact( 'method', 'body', 'timeout', 'redirection', 'stream', 'filename', 'sslverify' );
 
@@ -56,15 +56,15 @@ class Jetpack_Client {
 
 		require_once JETPACK__PLUGIN_DIR . 'class.jetpack-signature.php';
 
-		$time_diff = (int) Jetpack_Options::get_option( 'time_diff' );
+		$time_diff         = (int) Jetpack_Options::get_option( 'time_diff' );
 		$jetpack_signature = new Jetpack_Signature( $token->secret, $time_diff );
 
 		$timestamp = time() + $time_diff;
 
-		if( function_exists( 'wp_generate_password' ) ) {
+		if ( function_exists( 'wp_generate_password' ) ) {
 			$nonce = wp_generate_password( 10, false );
 		} else {
-			$nonce = substr( sha1( rand( 0, 1000000 ) ), 0, 10);
+			$nonce = substr( sha1( rand( 0, 1000000 ) ), 0, 10 );
 		}
 
 		// Kind of annoying.  Maybe refactor Jetpack_Signature to handle body-hashing
@@ -93,9 +93,9 @@ class Jetpack_Client {
 		}
 
 		$auth = array(
-			'token' => $token_key,
+			'token'     => $token_key,
 			'timestamp' => $timestamp,
-			'nonce' => $nonce,
+			'nonce'     => $nonce,
 			'body-hash' => $body_hash,
 		);
 
@@ -117,26 +117,29 @@ class Jetpack_Client {
 
 		$signature = $jetpack_signature->sign_request( $token_key, $timestamp, $nonce, $body_hash, $method, $url, $body, false );
 
-		if ( !$signature || is_wp_error( $signature ) ) {
+		if ( ! $signature || is_wp_error( $signature ) ) {
 			return $signature;
 		}
 
 		// Send an Authorization header so various caches/proxies do the right thing
 		$auth['signature'] = $signature;
-		$auth['version'] = JETPACK__VERSION;
-		$header_pieces = array();
+		$auth['version']   = JETPACK__VERSION;
+		$header_pieces     = array();
 		foreach ( $auth as $key => $value ) {
 			$header_pieces[] = sprintf( '%s="%s"', $key, $value );
 		}
-		$request['headers'] = array_merge( $args['headers'], array(
-			'Authorization' => "X_JETPACK " . join( ' ', $header_pieces ),
-		) );
+		$request['headers'] = array_merge(
+			$args['headers'],
+			array(
+				'Authorization' => 'X_JETPACK ' . join( ' ', $header_pieces ),
+			)
+		);
 
 		if ( 'header' != $args['auth_location'] ) {
 			$url = add_query_arg( 'signature', urlencode( $signature ), $url );
 		}
 
-		return Jetpack_Client::_wp_remote_request( $url, $request );
+		return self::_wp_remote_request( $url, $request );
 	}
 
 	/**
@@ -183,13 +186,13 @@ class Jetpack_Client {
 		$response = wp_remote_request( $url, $args );
 
 		if (
-			!$set_fallback                                     // We're not allowed to set the flag on this request, so whatever happens happens
+			! $set_fallback                                     // We're not allowed to set the flag on this request, so whatever happens happens
 		||
-			isset( $args['sslverify'] ) && !$args['sslverify'] // No verification - no point in doing it again
+			isset( $args['sslverify'] ) && ! $args['sslverify'] // No verification - no point in doing it again
 		||
-			!is_wp_error( $response )                          // Let it ride
+			! is_wp_error( $response )                          // Let it ride
 		) {
-			Jetpack_Client::set_time_diff( $response, $set_fallback );
+			self::set_time_diff( $response, $set_fallback );
 			return $response;
 		}
 
@@ -206,8 +209,8 @@ class Jetpack_Client {
 			false === strpos( $message, 'error setting certificate verify locations' ) // cURL CA bundle not found
 		&&
 			false === strpos( $message, 'Peer certificate cannot be authenticated with' ) // cURL CURLE_SSL_CACERT: CA bundle found, but not helpful
-			                                                                              // different versions of curl have different error messages
-			                                                                              // this string should catch them all
+																						  // different versions of curl have different error messages
+																						  // this string should catch them all
 		&&
 			false === strpos( $message, 'Problem with the SSL CA cert' ) // cURL CURLE_SSL_CACERT_BADFILE: probably access rights
 		) {
@@ -217,12 +220,12 @@ class Jetpack_Client {
 
 		// Redo the request without SSL certificate verification.
 		$args['sslverify'] = false;
-		$response = wp_remote_request( $url, $args );
+		$response          = wp_remote_request( $url, $args );
 
-		if ( !is_wp_error( $response ) ) {
+		if ( ! is_wp_error( $response ) ) {
 			// The request went through this time, flag for future fallbacks
 			Jetpack_Options::update_option( 'fallback_no_verify_ssl_certs', time() );
-			Jetpack_Client::set_time_diff( $response, $set_fallback );
+			self::set_time_diff( $response, $set_fallback );
 		}
 
 		return $response;
@@ -236,7 +239,7 @@ class Jetpack_Client {
 			return;
 		}
 
-		if ( !$date = wp_remote_retrieve_header( $response, 'date' ) ) {
+		if ( ! $date = wp_remote_retrieve_header( $response, 'date' ) ) {
 			return;
 		}
 
@@ -272,15 +275,18 @@ class Jetpack_Client {
 		$version       = ltrim( $version, 'v' );
 		$path          = ltrim( $path, '/' );
 
-		$args = array_intersect_key( $args, array(
-			'headers'     => 'array',
-			'method'      => 'string',
-			'timeout'     => 'int',
-			'redirection' => 'int',
-			'stream'      => 'boolean',
-			'filename'    => 'string',
-			'sslverify'   => 'boolean',
-		) );
+		$args = array_intersect_key(
+			$args,
+			array(
+				'headers'     => 'array',
+				'method'      => 'string',
+				'timeout'     => 'int',
+				'redirection' => 'int',
+				'stream'      => 'boolean',
+				'filename'    => 'string',
+				'sslverify'   => 'boolean',
+			)
+		);
 
 		$args['user_id'] = get_current_user_id();
 		$args['method']  = isset( $args['method'] ) ? strtoupper( $args['method'] ) : 'GET';
@@ -300,23 +306,26 @@ class Jetpack_Client {
 	/**
 	 * Query the WordPress.com REST API using the blog token
 	 *
-	 * @param string  $path
-	 * @param string  $version
-	 * @param array   $args
-	 * @param string  $body
-	 * @param string  $base_api_path
+	 * @param string $path
+	 * @param string $version
+	 * @param array  $args
+	 * @param string $body
+	 * @param string $base_api_path
 	 * @return array|WP_Error $response Data.
 	 */
 	static function wpcom_json_api_request_as_blog( $path, $version = self::WPCOM_JSON_API_VERSION, $args = array(), $body = null, $base_api_path = 'rest' ) {
-		$filtered_args = array_intersect_key( $args, array(
-			'headers'     => 'array',
-			'method'      => 'string',
-			'timeout'     => 'int',
-			'redirection' => 'int',
-			'stream'      => 'boolean',
-			'filename'    => 'string',
-			'sslverify'   => 'boolean',
-		) );
+		$filtered_args = array_intersect_key(
+			$args,
+			array(
+				'headers'     => 'array',
+				'method'      => 'string',
+				'timeout'     => 'int',
+				'redirection' => 'int',
+				'stream'      => 'boolean',
+				'filename'    => 'string',
+				'sslverify'   => 'boolean',
+			)
+		);
 
 		// unprecedingslashit
 		$_path = preg_replace( '/^\//', '', $path );
@@ -326,13 +335,16 @@ class Jetpack_Client {
 
 		$url = sprintf( '%s://%s/%s/v%s/%s', self::protocol(), JETPACK__WPCOM_JSON_API_HOST, $base_api_path, $version, $_path );
 
-		$validated_args = array_merge( $filtered_args, array(
-			'url'     => $url,
-			'blog_id' => (int) Jetpack_Options::get_option( 'id' ),
-			'method'  => $request_method,
-		) );
+		$validated_args = array_merge(
+			$filtered_args,
+			array(
+				'url'     => $url,
+				'blog_id' => (int) Jetpack_Options::get_option( 'id' ),
+				'method'  => $request_method,
+			)
+		);
 
-		return Jetpack_Client::remote_request( $validated_args, $body );
+		return self::remote_request( $validated_args, $body );
 	}
 
 	/**
@@ -348,7 +360,7 @@ class Jetpack_Client {
 
 		// Booleans are special, lets just makes them and explicit 1/0 instead of the 0 being an empty string.
 		if ( is_bool( $data ) ) {
-			return $data ? "1" : "0";
+			return $data ? '1' : '0';
 		}
 
 		// Cast objects into arrays.
@@ -358,7 +370,7 @@ class Jetpack_Client {
 
 		// Non arrays at this point should be just converted to strings.
 		if ( ! is_array( $data ) ) {
-			return (string)$data;
+			return (string) $data;
 		}
 
 		foreach ( $data as $key => &$value ) {
