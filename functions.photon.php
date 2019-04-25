@@ -194,6 +194,12 @@ function jetpack_photon_url( $image_url, $args = array(), $scheme = null ) {
 		}
 	}
 
+	// Add a scheme if there is not one.
+
+	if ( ! isset( $image_url_parts['scheme'] ) ) {
+		$image_url_parts['scheme'] = ( is_ssl() ? 'https:' : 'http:' );
+	}
+
 	if ( isset( $image_url_parts['scheme'] ) && 'https' === $image_url_parts['scheme'] ) {
 		$photon_url = add_query_arg( array( 'ssl' => 1 ), $photon_url );
 	}
@@ -303,6 +309,10 @@ function jetpack_photon_url_scheme( $url, $scheme ) {
  * @return mixed Result of wp_parse_url
  */
 function jetpack_photon_parse_url( $url, $component = -1 ) {
+	if ( 0 === strpos( $url, '//' ) ) {
+		$url = ( is_ssl() ? 'https:' : 'http:' ) . $url;
+	}
+
 	return wp_parse_url( $url, $component );
 }
 
