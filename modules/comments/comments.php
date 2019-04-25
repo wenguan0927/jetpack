@@ -478,12 +478,12 @@ class Jetpack_Comments extends Highlander_Comments_Base {
 		}
 		$check = Jetpack_Comments::sign_remote_comment_parameters( $post_array, $blog_token->secret );
 		if ( is_wp_error( $check ) ) {
-			wp_die( $check );
+			wp_die( $check, 400 );
 		}
 
 		// Bail if token is expired or not valid
 		if ( ! hash_equals( $check, $post_array['sig'] ) ) {
-			wp_die( __( 'Invalid security token.', 'jetpack' ) );
+			wp_die( __( 'Invalid security token.', 'jetpack' ), 400 );
 		}
 
 		/** This filter is documented in modules/comments/comments.php */
@@ -491,7 +491,7 @@ class Jetpack_Comments extends Highlander_Comments_Base {
 			// In case the comment POST is legit, but the comments are
 			// now disabled, we don't allow the comment
 
-			wp_die( __( 'Comments are not allowed.', 'jetpack' ) );
+			wp_die( __( 'Comments are not allowed.', 'jetpack' ), 403 );
 		}
 	}
 
