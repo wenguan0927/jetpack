@@ -89,7 +89,7 @@ class Jetpack_Data {
 		}
 
 		// No WPCOM subdomains
-		if ( preg_match( '#\.WordPress\.com$#i', $domain ) ) {
+		if ( preg_match( '#\.wordpress\.com$#i', $domain ) ) { // phpcs:ignore WordPress.WP.CapitalPDangit
 			return new WP_Error( 'fail_subdomain_wpcom', sprintf( __( 'Domain `%1$s` just failed is_usable_domain check as it is a subdomain of WordPress.com.', 'jetpack' ), $domain ) );
 		}
 
