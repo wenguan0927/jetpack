@@ -74,6 +74,7 @@ class Jetpack_Sync_Defaults {
 		'disabled_reblogs',
 		'jetpack_comment_likes_enabled',
 		'twitter_via',
+		'jetpack-memberships-connected-account-id',
 		'jetpack-twitter-cards-site-tag',
 		'wpcom_publish_posts_with_markdown',
 		'wpcom_publish_comments_with_markdown',
@@ -142,6 +143,7 @@ class Jetpack_Sync_Defaults {
 		'site_segment',
 		'site_user_type',
 		'site_vertical',
+		'jetpack_excluded_extensions',
 	);
 
 	public static function get_options_whitelist() {
@@ -568,6 +570,45 @@ class Jetpack_Sync_Defaults {
 		'jetpack_protect_global_whitelist',
 		'active_sitewide_plugins',
 	);
+
+	/**
+	 * A mapping of known importers to friendly names.
+	 *
+	 * Keys are the class name of the known importer.
+	 * Values are the friendly name.
+	 *
+	 * @since 7.3.0
+	 *
+	 * @var array
+	 */
+	public static $default_known_importers = array(
+		'Blogger_Importer'     => 'blogger',
+		'LJ_API_Import'        => 'livejournal',
+		'MT_Import'            => 'mt',
+		'RSS_Import'           => 'rss',
+		'WC_Tax_Rate_Importer' => 'woo-tax-rate',
+		'WP_Import'            => 'wordpress',
+	);
+
+	/**
+	 * Returns a list of known importers.
+	 *
+	 * @since 7.3.0
+	 *
+	 * @return array Known importers with importer class names as keys and friendly names as values.
+	 */
+	public static function get_known_importers() {
+		/**
+		 * Filter the list of known importers.
+		 *
+		 * @module sync
+		 *
+		 * @since 7.3.0
+		 *
+		 * @param array The default list of known importers.
+		 */
+		return apply_filters( 'jetpack_sync_known_importers', self::$default_known_importers );
+	}
 
 	static $default_taxonomy_whitelist       = array();
 	static $default_dequeue_max_bytes        = 500000; // very conservative value, 1/2 MB
