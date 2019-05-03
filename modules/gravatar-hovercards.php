@@ -6,7 +6,7 @@
  * Recommendation Order: 13
  * First Introduced: 1.1
  * Requires Connection: No
- * Auto Activate: Yes
+ * Auto Activate: No
  * Module Tags: Social, Appearance
  * Feature: Appearance
  * Additional Search Queries: gravatar, hovercards
@@ -25,7 +25,6 @@ function grofiles_hovercards_init() {
 	add_action( 'load-edit-comments.php',      'grofiles_admin_cards' );
 	add_action( 'load-options-discussion.php', 'grofiles_admin_cards_forced' );
 
-	Jetpack::enable_module_configurable( __FILE__ );
 	add_filter( 'jetpack_module_configuration_url_gravatar-hovercards', 'gravatar_hovercards_configuration_url' );
 }
 
