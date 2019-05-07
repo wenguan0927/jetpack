@@ -139,7 +139,7 @@ class MyPlanHeader extends React.Component {
 		return (
 			<>
 				<div>{ planCard }</div>
-				<ChecklistProgress />
+				{ process.env.NODE_ENV === 'development' && <ChecklistProgress /> }
 			</>
 		);
 	}
