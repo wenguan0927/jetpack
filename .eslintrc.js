@@ -101,6 +101,12 @@ module.exports = {
 	},
 	overrides: [
 		{
+			files: [ '_inc/client/**/*' ],
+			globals: {
+				__AppFeatures__: 'readonly',
+			},
+		},
+		{
 			files: [ 'extensions/**/*', 'webpack.config.extensions.js' ],
 			rules: {
 				'react/forbid-elements': [

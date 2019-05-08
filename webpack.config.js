@@ -6,6 +6,8 @@ const WordPressExternalDependenciesPlugin = require( '@automattic/wordpress-exte
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const devMode = process.env.NODE_ENV !== 'production';
 
+const enabledFeatures = process.env.ENABLE_FEATURES ? process.env.ENABLE_FEATURES.split( ',' ) : [];
+
 const webpackConfig = {
 	mode: devMode ? 'development' : 'production',
 	// Entry points point to the javascript module
@@ -66,6 +68,11 @@ const webpackConfig = {
 			// NODE_ENV is used inside React to enable/disable features that should
 			// only be used in development
 			'process.env.NODE_ENV': JSON.stringify( NODE_ENV ),
+
+			// Feature flags!
+			__AppFeatures__: JSON.stringify( {
+				checklist: enabledFeatures.includes( 'checklist' ),
+			} ),
 		} ),
 		new MiniCssExtractPlugin( {
 			// Options similar to the same options in webpackOptions.output
