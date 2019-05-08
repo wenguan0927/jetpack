@@ -149,8 +149,8 @@
 	"devDependencies": {
 		"@automattic/calypso-build": "1.0.0",
 		"@automattic/wordpress-external-dependencies-plugin": "1.0.0",
-		"@babel/core": "7.4.0",
-		"@babel/register": "7.4.0",
+		"@babel/core": "7.4.4",
+		"@babel/register": "7.4.4",
 		"@wordpress/element": "2.3.0",
 		"@wordpress/i18n": "3.3.0",
 		"@wordpress/jest-preset-default": "4.0.0",
